@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e7e7e7;
+            text-align: center;
+            padding: 50px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin-right: 10px;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .weather-info {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .weather-info h2 {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Get Weather</button>
+    </form>
+    {% if weather %}
+        <div class="weather-info">
+            <h2>{{ weather.city }}</h2>
+            <p><strong>Temperature:</strong> {{ weather.temperature }} °C</p>
+            <p><strong>Description:</strong> {{ weather.description }}</p>
+            <img src="http://openweathermap.org/img/w/{{ weather.icon }}.png" alt="Weather Icon">
+        </div>
+    {% endif %}
+</body>
+</html>
