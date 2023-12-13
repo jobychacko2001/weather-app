@@ -1,4 +1,4 @@
-name: Python Django CI/CD Dev
+name: Python Django CI/CD PROD
 
 on:
   push:
@@ -24,6 +24,3 @@ jobs:
       run: |
         docker buildx build --platform linux/amd64 -t chiragbaghra/python-project/weather-app:prod .
         docker push chiragbaghra/python-project/weather-app:prod
-
-
-# dckr_pat_X3B7RVGWSCuMHuzlkCITzUjJe7Y
