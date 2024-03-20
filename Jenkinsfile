@@ -34,7 +34,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'env.DOCKERHUB_USERNAME', passwordVariable: 'env.DOCKERHUB_PASSWORD')]) {
                         sh '''
                         docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-                        docker push DOCKERHUB_USERNAME/weather-app
+                        docker push $DOCKERHUB_USERNAME/weather-app
                         '''
                     }
                 }
