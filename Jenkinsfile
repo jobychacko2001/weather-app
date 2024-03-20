@@ -17,13 +17,13 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'python manage.py test'
+                sh 'python3 manage.py test'
             }
         }
 
         stage('Run Server') {
             steps {
-                sh 'nohup python manage.py runserver &'
+                sh 'nohup python3 manage.py runserver &'
             }
         }
     }
