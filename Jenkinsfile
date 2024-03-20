@@ -8,12 +8,6 @@ pipeline {
             }
         }
 
-        stage('Setup Environment') {
-            steps {
-                sh 'virtualenv venv'
-                sh '. venv/bin/activate'
-            }
-        }
 
         stage('Install Dependencies') {
             steps {
