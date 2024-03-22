@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('docker_cred')
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -24,6 +26,16 @@ pipeline {
             steps {
                 script {
                     dockerImage = docker.build("weather-app:${env.BUILD_ID}")
+                }
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
+                        dockerImage.push("${env.BUILD_ID}")
+                       
+                    }
                 }
             }
         }
