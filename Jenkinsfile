@@ -25,7 +25,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("weather-app:${env.BUILD_ID}")
+                    dockerImage = docker.build("jobychacko/weather-app:${env.BUILD_ID}")
                 }
             }
         }
