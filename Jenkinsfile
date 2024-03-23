@@ -29,16 +29,17 @@ pipeline {
                 }
             }
         }
+
         stage('Push to DockerHub') {
             steps {
                 echo 'Testing..'
-                echo 'env.BUILD_ID'
-                    withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                      sh '''
-                        docker login -u $USERNAME -p $PASSWORD'
-                        docker tag source-image:tag use-name/repo-name:tag
+                echo env.BUILD_ID
+                withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh '''
+                        docker login -u $USERNAME -p $PASSWORD
+                        docker tag jobychacko/weather-app:${env.BUILD_ID} use-name/repo-name:tag
                         docker push use-name/repo-name:tag
-                        '''
+                    '''
                 }
             }
         }
