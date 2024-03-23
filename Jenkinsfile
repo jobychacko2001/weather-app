@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker_cred')
+        EC2_CREDENTIALS = credentials('ec2_cred')
     }
     stages {
         stage('Checkout') {
@@ -39,6 +40,18 @@ pipeline {
                         
                         docker tag jobychacko/weather-app:${env.BUILD_ID} jobychacko/weather-app:latest
                         docker push jobychacko/weather-app:latest
+                    """
+                }
+            }
+        }
+        stage('Deploy to EC2') {
+            steps {
+                sshagent(credentials: ['ec2_cred']) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ec2-user@${env.EC2_IP} "
+                            docker pull jobychacko/weather-app:latest
+                            docker run -d -p 8000:8000 jobychacko/weather-app:latest
+                        "
                     """
                 }
             }
