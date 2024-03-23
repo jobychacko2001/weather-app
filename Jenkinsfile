@@ -29,16 +29,19 @@ pipeline {
                 }
             }
         }
+
         stage('Push to DockerHub') {
             steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
-                        dockerImage.push("${env.BUILD_ID}")
-                       
-                    }
+                echo 'Testing..'
+                withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        
+                        docker tag jobychacko/weather-app:${env.BUILD_ID} jobychacko/weather-app:latest
+                        docker push jobychacko/weather-app:latest
+                    """
                 }
             }
         }
-
     }
 }
