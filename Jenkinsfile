@@ -34,11 +34,11 @@ pipeline {
             steps {
                 echo 'Testing..'
                 withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh '''
+                    sh """
                         docker login -u $USERNAME -p $PASSWORD
                         docker tag jobychacko/weather-app:${env.BUILD_ID} 
                         docker push jobychacko/weather-app:${env.BUILD_ID}
-                    '''
+                    """
                 }
             }
         }
