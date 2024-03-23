@@ -31,15 +31,16 @@ pipeline {
         }
         stage('Push to DockerHub') {
             steps {
-                script {
-                    echo "env.BUILD_ID"
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
-                        dockerImage.push("${env.BUILD_ID}")
-                       
-                    }
+                echo 'Testing..'
+                echo 'env.BUILD_ID'
+                    withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                      sh '''
+                        docker login -u $USERNAME -p $PASSWORD'
+                        docker tag source-image:tag use-name/repo-name:tag
+                        docker push use-name/repo-name:tag
+                        '''
                 }
             }
         }
-
     }
 }
