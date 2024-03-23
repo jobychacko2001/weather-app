@@ -33,7 +33,6 @@ pipeline {
         stage('Push to DockerHub') {
             steps {
                 echo 'Testing..'
-                echo env.BUILD_ID
                 withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
                         docker login -u $USERNAME -p $PASSWORD
