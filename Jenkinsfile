@@ -48,7 +48,7 @@ pipeline {
             steps {
                 sshagent(credentials: ['ec2_cred']) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ec2-user@${env.EC2_IP} "
+                        ssh -o StrictHostKeyChecking=no ubuntu@${env.EC2_IP} "
                             docker pull jobychacko/weather-app:latest
                             docker run -d -p 8000:8000 jobychacko/weather-app:latest
                         "
