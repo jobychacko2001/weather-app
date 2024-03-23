@@ -35,9 +35,10 @@ pipeline {
                 echo 'Testing..'
                 withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh """
-                        docker login -u $USERNAME -p $PASSWORD
-                        docker tag jobychacko/weather-app:${env.BUILD_ID} 
-                        docker push jobychacko/weather-app:${env.BUILD_ID}
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        
+                        docker tag jobychacko/weather-app:${env.BUILD_ID} jobychacko/weather-app:latest
+                        docker push jobychacko/weather-app:latest
                     """
                 }
             }
