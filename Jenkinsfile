@@ -55,11 +55,11 @@ pipeline {
                 }
             }
         }
-        stage('Run Selenium Tests in Docker Container') {
+        stage('Run Selenium Test') {
             steps {
                 sshagent(credentials: ['ec2_cred']) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no -i "${env.KEY_PATH}" ubuntu@"${env.EC2_IP}" '
+                        ssh -o StrictHostKeyChecking=no -i ${env.KEY_PATH} ubuntu@${env.EC2_IP} '
                             docker exec $(docker ps -qf "ancestor=jobychacko/weather-app:latest") python3 selenium.py'
                     """
                 }
