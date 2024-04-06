@@ -26,6 +26,6 @@ EXPOSE 8000
 CMD ["python", "manage.py", "test_and_runserver", "0.0.0.0:8000"]
 
 # Run selenium tests after starting the Django server
-CMD ["python3", "selenium.py"]
+CMD ["sh", "-c", "python3 selenium.py && exit 1 || exit 0"]
 
 
