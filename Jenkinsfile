@@ -47,11 +47,27 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 sshagent(credentials: ['ec2_cred']) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no -i ${env.KEY_PATH} ubuntu@${env.EC2_IP} '
-                            docker pull jobychacko/weather-app:latest
-                            docker run -d -p 8000:8000 jobychacko/weather-app:latest'
-                    """
+                    script {
+                        // Execute the deployment command and capture the exit code
+                        env.DEPLOYMENT_EXIT_CODE = sh(script: """
+                            ssh -o StrictHostKeyChecking=no -i ${env.KEY_PATH} ubuntu@${env.EC2_IP} '
+                                docker pull jobychacko/weather-app:latest
+                                docker run -d -p 8000:8000 jobychacko/weather-app:latest
+                                echo $?
+                            '
+                        """, returnStdout: true).trim()
+                    }
+                }
+            }
+        }
+        
+        stage('Check Deployment Status') {
+            steps {
+                script {
+                    // Use the stored exit code to determine the deployment status
+                    if (env.DEPLOYMENT_EXIT_CODE.toInteger() != 0) {
+                        error("Deployment failed with exit code: ${env.DEPLOYMENT_EXIT_CODE}")
+                    }
                 }
             }
         }
