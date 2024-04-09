@@ -46,7 +46,7 @@ pipeline {
         }
         stage('Deploy to EC2') {
             steps {
-                sshagent(credentials: ['ec2_cred']) {
+                
                     script {
                         // Execute the deployment command and capture the exit code
                         env.DEPLOYMENT_EXIT_CODE = sh(script: """
@@ -59,7 +59,7 @@ pipeline {
                     }
                 }
             }
-        } 
+         
         stage('Check Deployment Status') {
             steps {
                 script {
