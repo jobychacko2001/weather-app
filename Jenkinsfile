@@ -4,6 +4,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker_cred')
         EC2_CREDENTIALS = credentials('ec2_cred')
     }
+     def privateKey = credentials('dev_server_cred').getPrivateKey()
     stages {
         stage('Checkout') {
             steps {
@@ -44,7 +45,7 @@ pipeline {
                 }
             }
         }
-        def privateKey = credentials('dev_server_cred').getPrivateKey()
+       
         stage('Deploy to EC2') {
             steps {
                 
