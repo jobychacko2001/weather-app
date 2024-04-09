@@ -44,11 +44,12 @@ pipeline {
                 }
             }
         }
+        def privateKey = credentials('dev_server_cred').getPrivateKey()
         stage('Deploy to EC2') {
             steps {
                 
                     script {
-                        def privateKey = credentials('dev_server_cred').getPrivateKey()
+                        
                         // Execute the deployment command and capture the exit code
                         env.DEPLOYMENT_EXIT_CODE = sh(script: """
                         ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
