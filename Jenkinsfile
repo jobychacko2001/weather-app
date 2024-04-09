@@ -55,8 +55,8 @@ pipeline {
                         // Execute the deployment command and capture the exit code
                         env.DEPLOYMENT_EXIT_CODE = sh(script: """
                         ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
-                          docker pull jobychacko/weather-app:latest
-                          docker run -d -p 8000:8000 jobychacko/weather-app:latest
+                          sudo docker pull jobychacko/weather-app:latest
+                          sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
                           echo \$? 
                         '
                       """, returnStdout: true).trim()
