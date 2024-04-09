@@ -3,8 +3,9 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker_cred')
         EC2_CREDENTIALS = credentials('ec2_cred')
+        privateKey = credentials('dev_server_cred')
     }
-     def privateKey = credentials('dev_server_cred').getPrivateKey()
+    
     stages {
         stage('Checkout') {
             steps {
@@ -50,7 +51,7 @@ pipeline {
             steps {
                 
                     script {
-                        
+                         
                         // Execute the deployment command and capture the exit code
                         env.DEPLOYMENT_EXIT_CODE = sh(script: """
                         ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
