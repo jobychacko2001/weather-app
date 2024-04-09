@@ -82,5 +82,24 @@ pipeline {
                 }
             }
         }
+         stage('Merge to Master') {
+            when {
+                // This stage is executed only if DEPLOYMENT_EXIT_CODE is 0
+                expression { return env.DEPLOYMENT_EXIT_CODE.toInteger() == 0 }
+            }
+            steps {
+                script {
+                    // Fetch the current branch name
+                    def currentBranch = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
+                    
+                    // Merge current branch to master
+                    sh """
+                        git checkout master
+                        git pull origin master
+                        git merge ${currentBranch} --no-ff -m "Merge ${currentBranch} into master by Jenkins"
+                        git push origin master
+                    """
+                }
+            }
     }
 }
