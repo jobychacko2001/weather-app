@@ -68,9 +68,14 @@ pipeline {
             steps {
                 script {
                     // Use the stored exit code to determine the deployment status
+                   if (env.DEPLOYMENT_EXIT_CODE != null && env.DEPLOYMENT_EXIT_CODE.isInteger()) {
                     if (env.DEPLOYMENT_EXIT_CODE.toInteger() != 0) {
                         error("Deployment failed with exit code: ${env.DEPLOYMENT_EXIT_CODE}")
                     }
+                } else {
+                    error("Invalid deployment exit code: ${env.DEPLOYMENT_EXIT_CODE}")
+                }
+
                 }
             }
         }
