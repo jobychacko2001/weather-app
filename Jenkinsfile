@@ -53,7 +53,7 @@ pipeline {
                         ssh -o StrictHostKeyChecking=no -i ${env.KEY_PATH} ubuntu@${env.EC2_IP} '
                           docker pull jobychacko/weather-app:latest
                           docker run -d -p 8000:8000 jobychacko/weather-app:latest
-                          echo \$?  // Escaped dollar sign or {{\$?}}
+                          echo $? 
                         '
                       """, returnStdout: true).trim()
                     }
