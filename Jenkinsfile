@@ -91,7 +91,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                        usernamePassword(credentialsId: git_cred, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')
+                        usernamePassword(credentialsId: 'git_cred', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')
                     ]){
                     // Fetch the current branch name
                     def currentBranch = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
