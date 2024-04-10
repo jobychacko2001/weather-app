@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm credentialsId: 'git_cred'
+                checkout scm
             }
         }
 
