@@ -4,6 +4,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker_cred')
         EC2_CREDENTIALS = credentials('ec2_cred')
         privateKey = credentials('dev_server_cred')
+        GIT_CREDENTIALS = credentials('git_cred')
     }
     
     stages {
@@ -89,9 +90,16 @@ pipeline {
             }
             steps {
                 script {
+                    withCredentials([
+                        usernamePassword(credentialsId: GIT_CREDENTIALS, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')
+                    ]){
                     // Fetch the current branch name
                     def currentBranch = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
-                    
+
+                    sh """
+                        git config --global credential.helper '!echo "username=\$GIT_USERNAME" && echo "password=\$GIT_PASSWORD"'
+                    """
+                                        
                     // Merge current branch to master
                     sh """
                         git checkout master
@@ -99,6 +107,7 @@ pipeline {
                         git merge ${currentBranch} --no-ff -m "Merge ${currentBranch} into master by Jenkins"
                         git push origin master
                     """
+                    }
                 }
             }
          }
