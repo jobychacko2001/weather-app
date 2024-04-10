@@ -98,7 +98,7 @@ pipeline {
 
                     sh """
                         git remote set-url origin git@github.com:jobychacko2001/weather-app.git
-                        git config --global core.sshCommand 'ssh -i $SSH_PRIVATE_KEY'
+                        git config --global core.sshCommand 'ssh -i StrictHostKeyChecking=no $SSH_PRIVATE_KEY'
                     """
                                         
                     // Merge current branch to master
