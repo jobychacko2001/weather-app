@@ -4,7 +4,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker_cred')
         EC2_CREDENTIALS = credentials('ec2_cred')
         privateKey = credentials('dev_server_cred')
-        GIT_CREDENTIALS = credentials('git_cred')
+        //GIT_CREDENTIALS = credentials('git_cred')
     }
     
     stages {
@@ -91,7 +91,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                        usernamePassword(credentialsId: GIT_CREDENTIALS, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')
+                        usernamePassword(credentialsId: git_cred, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')
                     ]){
                     // Fetch the current branch name
                     def currentBranch = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
