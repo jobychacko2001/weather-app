@@ -91,13 +91,13 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                        usernamePassword(credentialsId: 'git_cred', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')
+                        sshUserPrivateKey(credentialsId: 'git_cred', keyFileVariable: 'SSH_PRIVATE_KEY')
                     ]){
                     // Fetch the current branch name
                     def currentBranch = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
 
                     sh """
-                        git config --global credential.helper '!echo "username=\$GIT_USERNAME" && echo "password=\$GIT_PASSWORD"'
+                        git config --global core.sshCommand 'ssh -i $SSH_PRIVATE_KEY'
                     """
                                         
                     // Merge current branch to master
