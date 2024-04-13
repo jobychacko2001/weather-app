@@ -100,8 +100,8 @@ pipeline {
                                                 
                         // Merge current branch to master
                         sh """
-                            git checkout master
-                            git pull origin master
+                            git checkout main
+                            git pull origin main
                             git merge ${currentBranch} --no-ff -m "Merge ${currentBranch} into master by Jenkins"
                             git push origin master
                         """
