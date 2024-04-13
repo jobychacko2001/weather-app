@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the project files to the working directory in the container
 COPY . /app/
-COPY selenium.py /app/
+COPY selenium_test.py /app/
 
 # Run database migrations
 RUN python manage.py migrate
@@ -28,5 +28,5 @@ EXPOSE 8000
 # Run selenium tests after starting the Django server
 #CMD ["sh", "-c", "python3 selenium.py && exit 1 || exit 0"]
 # Start the Django development server and run Selenium tests
-CMD sh -c "python manage.py runserver 0.0.0.0:8000 & sleep 10; python3 selenium.py && exit 1 || exit 0"
+CMD sh -c "python manage.py runserver 0.0.0.0:8000 & sleep 10; python3 selenium_test.py && exit 1 || exit 0"
 
