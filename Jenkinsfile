@@ -5,6 +5,7 @@ pipeline {
         EC2_CREDENTIALS = credentials('ec2_cred')
         privateKey = credentials('dev_server_cred')
         //GIT_CREDENTIALS = credentials('git_cred')
+        EC2_PROD_Key = credentials('EC2_PROD_Key')
     }
     
     stages {
@@ -48,7 +49,7 @@ pipeline {
             }
         }
        
-        stage('Deploy to EC2') {
+        stage('Deploy to DEV_EC2') {
             steps {
                 
                     script {
@@ -105,6 +106,19 @@ pipeline {
                             git merge ${currentBranch} --no-ff -m "Merge ${currentBranch} into master by Jenkins"
                             git push origin master
                         """
+                    }
+                }
+            }
+            stage('Deploy to PROD_EC2') {
+                steps {
+                    script {
+                        // Execute the deployment command
+                        sh(script: """
+                            ssh -v -o StrictHostKeyChecking=no -i ${EC2_PROD_Key} ubuntu@${env.EC2_PROD_IP} '
+                              sudo docker pull jobychacko/weather-app:latest
+                              sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
+                            '
+                        """, returnStdout: true).trim()
                     }
                 }
             }
