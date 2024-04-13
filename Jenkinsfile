@@ -90,27 +90,25 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([
-                        sshUserPrivateKey(credentialsId: 'git_cred', keyFileVariable: 'SSH_PRIVATE_KEY')
-                    ]){
-                    // Fetch the current branch name
-                    def currentBranch = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
-
-                    sh """
-                        git remote set-url origin git@github.com:jobychacko2001/weather-app.git
-                        git config --global core.sshCommand 'ssh -i $SSH_PRIVATE_KEY'
-                    """
-                                        
-                    // Merge current branch to master
-                    sh """
-                        git checkout master
-                        git pull origin master
-                        git merge ${currentBranch} --no-ff -m "Merge ${currentBranch} into master by Jenkins"
-                        git push origin master
-                    """
+                    withCredentials([string(credentialsId: 'git_cred', variable: 'GIT_TOKEN')]){
+                        // Fetch the current branch name
+                        def currentBranch = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
+            
+                        sh """
+                            git remote set-url origin https://x-access-token:${GIT_TOKEN}@github.com/jobychacko2001/weather-app.git
+                        """
+                                                
+                        // Merge current branch to master
+                        sh """
+                            git checkout master
+                            git pull origin master
+                            git merge ${currentBranch} --no-ff -m "Merge ${currentBranch} into master by Jenkins"
+                            git push origin master
+                        """
                     }
                 }
             }
+
          }
     }
 }
