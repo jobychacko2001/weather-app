@@ -109,6 +109,7 @@ pipeline {
                     }
                 }
             }
+         }
             stage('Deploy to PROD_EC2') {
                 steps {
                     script {
@@ -123,6 +124,6 @@ pipeline {
                 }
             }
 
-         }
+         
     }
 }
