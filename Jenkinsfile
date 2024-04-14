@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker_cred')
-        EC2_CREDENTIALS = credentials('ec2_cred')
+        //EC2_CREDENTIALS = credentials('ec2_cred')
         privateKey = credentials('dev_server_cred')
         //GIT_CREDENTIALS = credentials('git_cred')
         EC2_PROD_Key = credentials('EC2_PROD_Key')
