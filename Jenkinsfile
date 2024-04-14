@@ -85,31 +85,35 @@ pipeline {
             }
         }
          stage('Merge to Master') {
-            when {
-                // This stage is executed only if DEPLOYMENT_EXIT_CODE is 0
-                expression { return env.DEPLOYMENT_EXIT_CODE.toInteger() == 0 }
-            }
+    when {
+        // This stage is executed only if DEPLOYMENT_EXIT_CODE is 0
+        expression { return env.DEPLOYMENT_EXIT_CODE.toInteger() == 0 }
+    }
             steps {
                 script {
                     withCredentials([string(credentialsId: 'git_cred', variable: 'GIT_TOKEN')]){
-                        // Fetch the current branch name
-                        def currentBranch = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
-            
+                        // Configure remote with access token for authentication
                         sh """
                             git remote set-url origin https://x-access-token:${GIT_TOKEN}@github.com/jobychacko2001/weather-app.git
                         """
-                                                
-                        // Merge current branch to master
+        
+                        // Merge main branch into master
                         sh """
-                            git checkout main
-                            git pull origin main
-                            git merge ${currentBranch} --no-ff -m "Merge ${currentBranch} into master by Jenkins"
+                            git fetch --all
+                            git checkout master
+                            git pull origin master
+                            git merge origin/main --no-ff -m "Merge main into master by Jenkins"
+                        """
+        
+                        // Push the changes back to the master branch
+                        sh """
                             git push origin master
                         """
                     }
                 }
             }
-         }
+        }
+
             stage('Deploy to PROD_EC2') {
                 steps {
                     script {
