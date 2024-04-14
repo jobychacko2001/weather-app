@@ -54,21 +54,21 @@ pipeline {
         script {
             // Start the Docker container
             sh """
-            ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
-               
-                if sudo docker ps --format '{{.Ports}}' | grep -q '0.0.0.0:8000->8000/tcp'; then
-                    echo "Container is already running on port 8000. Stopping it..."
-                    sudo docker stop \$(sudo docker ps -qf "port=8000")
-                    echo "Removing the container..."
-                     sudo docker rm \$(sudo docker ps -aqf "port=8000")
-                fi
-                
-                # Pull the latest Docker image
-                sudo docker pull jobychacko/weather-app:latest
-                
-                # Start the Docker container
-                sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
-            '
+    ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
+        # Check if there is any container already running on port 8000
+        if sudo docker ps --format '{{.Ports}}' | grep -q '0.0.0.0:8000->8000/tcp'; then
+            echo "Container is already running on port 8000. Stopping it..."
+            sudo docker stop \$(sudo docker ps -qf "port=8000")
+            echo "Removing the container..."
+            sudo docker rm \$(sudo docker ps -aqf "port=8000")
+        fi
+        
+        # Pull the latest Docker image
+        sudo docker pull jobychacko/weather-app:latest
+        
+        # Start the Docker container
+        sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
+    '
         """
             
             // Execute Selenium tests against the Docker container on the development server
