@@ -51,39 +51,38 @@ pipeline {
        
         stage('Deploy to DEV_EC2') {
             steps {
-                
-                    script {
-                         
-                        // Execute the deployment command and capture the exit code
-                        def deploymentOutput = sh(script: """
-                        ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
-                          sudo docker pull jobychacko/weather-app:latest
-                          sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
-                          echo \$? 
-                        '
-                      """, returnStdout: true).trim()
-                        def lines = deploymentOutput.split("\\n")
-                        def exitCodeLine = lines[-1]
-                        env.DEPLOYMENT_EXIT_CODE = exitCodeLine.trim()
-                    }
-                }
-            }
-         
-        stage('Check Deployment Status') {
-            steps {
                 script {
-                    // Use the stored exit code to determine the deployment status
-                   if (env.DEPLOYMENT_EXIT_CODE != null && env.DEPLOYMENT_EXIT_CODE.isInteger()) {
-                    if (env.DEPLOYMENT_EXIT_CODE.toInteger() != 0) {
-                        error("Deployment failed with exit code: ${env.DEPLOYMENT_EXIT_CODE}")
-                    }
-                } else {
-                    error("Invalid deployment exit code: ${env.DEPLOYMENT_EXIT_CODE}")
-                }
-
+                    // Start the Docker container
+                    sh """
+                        ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
+                            sudo docker pull jobychacko/weather-app:latest
+                            sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
+                        '
+                    """
                 }
             }
         }
+        
+stage('Run Selenium Tests on DEV_EC2') {
+    steps {
+        script {
+            // Execute Selenium tests against the Docker container on the development server
+            def testResult = sh (
+                script: '''
+                    ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} << 'EOF'
+                        containerId=$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
+                        sudo docker exec $containerId python3 /app/selenium_test.py
+                    EOF
+                ''',
+                returnStatus: true
+            )
+
+            if (testResult != 0) {
+                error("Selenium tests failed on the Docker container.")
+            }
+        }
+    }
+}
          stage('Merge to Master') {
     when {
         // This stage is executed only if DEPLOYMENT_EXIT_CODE is 0
