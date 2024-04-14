@@ -49,23 +49,17 @@ pipeline {
             }
         }
        
-        stage('Deploy to DEV_EC2') {
-            steps {
-                script {
-                    // Start the Docker container
-                    sh """
-                        ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
-                            sudo docker pull jobychacko/weather-app:latest
-                            sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
-                        '
-                    """
-                }
-            }
-        }
-        
-stage('Run Selenium Tests on DEV_EC2') {
+        stage('Deploy and Test on DEV_EC2') {
     steps {
         script {
+            // Start the Docker container
+            sh """
+                ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
+                    sudo docker pull jobychacko/weather-app:latest
+                    sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
+                '
+            """
+            
             // Execute Selenium tests against the Docker container on the development server
             def testResult = sh (
                 script: '''
@@ -77,16 +71,27 @@ stage('Run Selenium Tests on DEV_EC2') {
                 returnStatus: true
             )
 
-            if (testResult != 0) {
-                error("Selenium tests failed on the Docker container.")
-            }
+            // Store the test result
+            env.TEST_RESULT = testResult
         }
+    }
+}
+
+stage('Check Test Result') {
+    when {
+        expression {
+            // Check if the test result is not successful
+            return env.TEST_RESULT != 0
+        }
+    }
+    steps {
+        error("Selenium tests failed on the Docker container.")
     }
 }
          stage('Merge to Master') {
     when {
         // This stage is executed only if DEPLOYMENT_EXIT_CODE is 0
-        expression { return env.DEPLOYMENT_EXIT_CODE.toInteger() == 0 }
+        expression { return env.TEST_RESULT.toInteger() == 0 }
     }
             steps {
                 script {
