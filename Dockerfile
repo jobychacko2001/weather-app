@@ -11,6 +11,13 @@ WORKDIR /app
 # Copy the requirements file and install dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
+# Install Google Chrome
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    dpkg -i google-chrome-stable_current_amd64.deb && \
+    apt-get install -f -y && \
+    rm google-chrome-stable_current_amd64.deb
 
 # Copy the project files to the working directory in the container
 COPY . /app/
