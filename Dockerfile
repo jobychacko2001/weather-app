@@ -23,10 +23,10 @@ RUN python manage.py migrate
 EXPOSE 8000
 
 # Start the Django development server
-#CMD ["python", "manage.py", "test_and_runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "test_and_runserver", "0.0.0.0:8000"]
 
 # Run selenium tests after starting the Django server
 #CMD ["sh", "-c", "python3 selenium.py && exit 1 || exit 0"]
 # Start the Django development server and run Selenium tests
-CMD sh -c "python manage.py runserver 0.0.0.0:8000 & sleep 10; python3 selenium_test.py && exit 1 || exit 0"
+#CMD sh -c "python manage.py runserver 0.0.0.0:8000 & sleep 10; python3 selenium_test.py && exit 1 || exit 0"
 
