@@ -55,19 +55,24 @@ pipeline {
             // Start the Docker container
             sh """
     ssh -v -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} '
-        # Check if there is any container already running on port 8000
-        if sudo docker ps --format '{{.Ports}}' | grep -q '0.0.0.0:8000->8000/tcp'; then
-            echo "Container is already running on port 8000. Stopping it..."
-            sudo docker stop \$(sudo docker ps -qf "port=8000")
-            echo "Removing the container..."
-            sudo docker rm \$(sudo docker ps -aqf "port=8000")
-        fi
-        
-        # Pull the latest Docker image
-        sudo docker pull jobychacko/weather-app:latest
-        
-        # Start the Docker container
-        sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
+        # Get the container ID of any container running on port 8000
+                        container_id=\$(docker ps --filter "publish=8000" -q)
+
+                        # If a container is running on port 8000, stop and remove it
+                        if [ ! -z "\$container_id" ]; then
+                            echo "Stopping and removing container on port 8000..."
+                            docker stop \$container_id
+                            docker rm \$container_id
+                            echo "Container \$container_id has been stopped and removed."
+                        else
+                            echo "No container is running on port 8000."
+                        fi
+
+                        # Pull the latest Docker image
+                        docker pull jobychacko/weather-app:latest
+
+                        # Start the Docker container on port 8000
+                        docker run -d -p 8000:8000 jobychacko/weather-app:latest
     '
         """
             
