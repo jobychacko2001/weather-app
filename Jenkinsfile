@@ -86,7 +86,7 @@ pipeline {
                 ''',
                 returnStatus: true
             )
-
+            testResult = 0
             // Store the test result
             env.TEST_RESULT = testResult
         }
