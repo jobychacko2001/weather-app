@@ -140,10 +140,26 @@ pipeline {
                         // Execute the deployment command
                         sh(script: """
                             ssh -v -o StrictHostKeyChecking=no -i ${EC2_PROD_Key} ubuntu@${env.EC2_PROD_IP} '
-                              sudo docker pull jobychacko/weather-app:latest
-                              sudo docker run -d -p 8000:8000 jobychacko/weather-app:latest
+                              # Get the container ID of any container running on port 8000
+                        container_id=\$(docker ps --filter "publish=8000" -q)
+
+                        # If a container is running on port 8000, stop and remove it
+                        if [ ! -z "\$container_id" ]; then
+                            echo "Stopping and removing container on port 8000..."
+                            docker stop \$container_id
+                            docker rm \$container_id
+                            echo "Container \$container_id has been stopped and removed."
+                        else
+                            echo "No container is running on port 8000."
+                        fi
+
+                        # Pull the latest Docker image
+                        docker pull jobychacko/weather-app:latest
+
+                        # Start the Docker container on port 8000
+                        docker run -d -p 8000:8000 jobychacko/weather-app:latest
                             '
-                        """, returnStdout: true).trim()
+                        """)
                     }
                 }
             }
