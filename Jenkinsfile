@@ -78,12 +78,12 @@ pipeline {
             sh 'sleep 10'
             // Execute Selenium tests against the Docker container on the development server
             def testResult = sh (
-                script: '''
-                    ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} << 'EOF'
-                        containerId=$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
-                        sudo docker exec $containerId python3 /app/selenium_test.py
+                script: """
+                    ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} 'bash -s' << 'EOF'
+                        containerId=\$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
+                        sudo docker exec \$containerId python3 /app/selenium_test.py
                     EOF
-                ''',
+                """,
                 returnStatus: true
             )
             echo "Test Result: ${testResult}"
