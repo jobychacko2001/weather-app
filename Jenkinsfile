@@ -88,7 +88,7 @@ pipeline {
             )
             
             // Store the test result
-            //env.TEST_RESULT = 0
+            //env.TEST_RESULT = testResult
         }
     }
 }
