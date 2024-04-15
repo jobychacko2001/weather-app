@@ -8,23 +8,3 @@ sqlparse==0.4.4
 tzdata==2023.3
 urllib3==2.1.0
 selenium
-fonts-liberation
-libasound2
-libatk-bridge2.0-0
-libatk1.0-0
-libatspi2.0-0
-libcups2
-libdbus-1-3
-libdrm2
-libgbm1
-libgtk-3-0 | libgtk-4-1
-libnspr4
-libnss3
-libu2f-udev
-libvulkan1
-libxcomposite1
-libxdamage1
-libxfixes3
-libxkbcommon0
-libxrandr2
-xdg-utils
