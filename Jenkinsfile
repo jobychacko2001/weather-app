@@ -75,7 +75,7 @@ pipeline {
                         docker run -d -p 8000:8000 jobychacko/weather-app:latest
     '
         """
-            
+            sh 'sleep 10'
             // Execute Selenium tests against the Docker container on the development server
             def testResult = sh (
                 script: '''
