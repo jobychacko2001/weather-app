@@ -40,7 +40,7 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Get Weather</button>
+        <button type="submit" id="submit">Get Weather</button>
     </form>
     {% if weather %}
         <div class="weather-info">
