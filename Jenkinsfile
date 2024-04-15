@@ -86,9 +86,10 @@ pipeline {
                 ''',
                 returnStatus: true
             )
-            
+            echo "Test Result: ${testResult}"
             // Store the test result
             env.TEST_RESULT = testResult
+            
         }
     }
 }
