@@ -23,7 +23,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'python3 manage.py test weather_app/tests.py'
+                sh 'python3 manage.py test weather_app.tests'
             }
         }
 
