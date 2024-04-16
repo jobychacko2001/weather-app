@@ -83,7 +83,7 @@ pipeline {
                         containerId=\$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
                         sudo docker exec \$containerId python manage.py test weather_app.test_functional
 
-                    EOF
+                    
                 """,
                 returnStatus: true
             )
