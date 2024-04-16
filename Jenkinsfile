@@ -81,7 +81,7 @@ pipeline {
                 script: """
                     ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} 'bash -sx' << 'EOF'
                         containerId=\$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
-                        sudo docker exec \$containerId python manage.py test test_functional
+                        sudo docker exec \$containerId python manage.py test test_functional.py
                     EOF
                 """,
                 returnStatus: true
