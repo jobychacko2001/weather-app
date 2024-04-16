@@ -6,12 +6,12 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Install system dependencies
-RUN apk update \
-    && apk add --no-cache \
-        chromium \
-        chromium-chromedriver \
-        # Add any additional dependencies here \
-    && rm -rf /var/cache/apk/*
+# RUN apk update \
+#     && apk add --no-cache \
+#         chromium \
+#         chromium-chromedriver \
+#         # Add any additional dependencies here \
+#     && rm -rf /var/cache/apk/*
 
 # Set up environment for running Chromium headless
 ENV DISPLAY=:99
@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the project files to the working directory in the container
 COPY . /app/
-
+COPY test_functional.py /app/
 # Run database migrations or other setup commands here if needed
 
 # Expose the port the app runs on
