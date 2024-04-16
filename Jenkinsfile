@@ -75,35 +75,25 @@ pipeline {
                         docker run -d -p 8000:8000 jobychacko/weather-app:latest
     '
         """
-            
+            sh 'sleep 10'
             // Execute Selenium tests against the Docker container on the development server
             def testResult = sh (
-                script: '''
-                    ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} << 'EOF'
-                        containerId=$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
-                        sudo docker exec $containerId python3 /app/selenium_test.py
+                script: """
+                    ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} 'bash -sx' << 'EOF'
+                        containerId=\$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
+                        sudo docker exec \$containerId python3 /app/selenium_test.py
                     EOF
-                ''',
+                """,
                 returnStatus: true
             )
-            
+            echo "Test Result: ${testResult}"
             // Store the test result
-            //env.TEST_RESULT = testResult
+            env.TEST_RESULT = testResult
+            
         }
     }
 }
 
-// stage('Check Test Result') {
-//     when {
-//         expression {
-//             // Check if the test result is not successful
-//             return env.TEST_RESULT != 0
-//         }
-//     }
-//     steps {
-//         error("Selenium tests failed on the Docker container.")
-//     }
-// }
          stage('Merge to Master') {
     when {
         // This stage is executed only if DEPLOYMENT_EXIT_CODE is 0
