@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the project files to the working directory in the container
 COPY . /app/
-COPY test_functional.py /app/
+COPY test_functional.py /app/weather_app/
 # Run database migrations or other setup commands here if needed
 
 # Expose the port the app runs on
