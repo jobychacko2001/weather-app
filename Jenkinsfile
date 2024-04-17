@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     environment {
@@ -65,11 +64,10 @@ pipeline {
                             docker stop \$container_id
                             docker rm \$container_id
                             echo "Container \$container_id has been stopped and removed."
-                            docker rmi $(sudo docker images -q) -f
                         else
                             echo "No container is running on port 8000."
                         fi
-                        
+
                         # Pull the latest Docker image
                         docker pull jobychacko/weather-app:latest
 
