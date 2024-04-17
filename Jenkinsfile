@@ -74,7 +74,7 @@ pipeline {
                         fi
                         # Remove all existing Docker images
                         echo "Removing all Docker images..."
-                        docker rmi \$(docker images -q) --force
+                        docker images -q | xargs -r docker rmi --no-prune -f || true
                         echo "All Docker images have been removed."
                         
                         # Pull the latest Docker image
@@ -154,7 +154,7 @@ pipeline {
                         
                         # Remove all existing Docker images
                         echo "Removing all Docker images..."
-                        docker rmi \$(docker images -q) --force
+                        docker images -q | xargs -r docker rmi --no-prune -f || true
                         echo "All Docker images have been removed."
                         
                         # Pull the latest Docker image
