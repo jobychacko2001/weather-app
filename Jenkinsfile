@@ -146,7 +146,12 @@ pipeline {
                         else
                             echo "No container is running on port 8000."
                         fi
-
+                        
+                        # Remove all existing Docker images
+                        echo "Removing all Docker images..."
+                        docker rmi \$(docker images -q) --force
+                        echo "All Docker images have been removed."
+                        
                         # Pull the latest Docker image
                         docker pull jobychacko/weather-app:latest
 
