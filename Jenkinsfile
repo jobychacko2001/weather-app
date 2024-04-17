@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
     environment {
@@ -23,7 +24,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'python3 manage.py test'
+                 sh 'python3 manage.py test weather_app.tests'
             }
         }
 
@@ -44,6 +45,10 @@ pipeline {
                         
                         docker tag jobychacko/weather-app:${env.BUILD_ID} jobychacko/weather-app:latest
                         docker push jobychacko/weather-app:latest
+                        # Remove all existing Docker images
+                        echo "Removing all Docker images..."
+                        docker rmi \$(docker images -q) --force
+                        echo "All Docker images have been removed."
                     """
                 }
             }
@@ -67,7 +72,11 @@ pipeline {
                         else
                             echo "No container is running on port 8000."
                         fi
-
+                        # Remove all existing Docker images
+                        echo "Removing all Docker images..."
+                        docker images -q | xargs -r docker rmi --no-prune -f || true
+                        echo "All Docker images have been removed."
+                        
                         # Pull the latest Docker image
                         docker pull jobychacko/weather-app:latest
 
@@ -76,13 +85,13 @@ pipeline {
     '
         """
             sh 'sleep 10'
-            // Execute Selenium tests against the Docker container on the development server
+            // Execute tests against the Docker container on the development server
             def testResult = sh (
                 script: """
                     ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} 'bash -sx' << 'EOF'
                         containerId=\$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
-                        sudo docker exec \$containerId python3 /app/selenium_test.py
-                    EOF
+                        sudo docker exec \$containerId python manage.py test weather_app.test_functional
+        
                 """,
                 returnStatus: true
             )
@@ -142,7 +151,12 @@ pipeline {
                         else
                             echo "No container is running on port 8000."
                         fi
-
+                        
+                        # Remove all existing Docker images
+                        echo "Removing all Docker images..."
+                        docker images -q | xargs -r docker rmi --no-prune -f || true
+                        echo "All Docker images have been removed."
+                        
                         # Pull the latest Docker image
                         docker pull jobychacko/weather-app:latest
 
