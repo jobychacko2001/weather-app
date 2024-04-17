@@ -167,7 +167,7 @@ pipeline {
                         
                         # Pull the latest Docker image
                         docker pull jobychacko/weather-app:latest
-
+                        #test
                         # Start the Docker container on port 8000
                         docker run -d -p 8000:8000 jobychacko/weather-app:latest
                             '
