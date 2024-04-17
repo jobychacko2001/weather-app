@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
     environment {
@@ -23,7 +24,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'python3 manage.py test'
+                 sh 'python3 manage.py test weather_app.tests'
             }
         }
 
@@ -73,7 +74,11 @@ pipeline {
                         fi
                         # Remove all existing Docker images
                         echo "Removing all Docker images..."
+
+                        docker images -q | xargs -r docker rmi --no-prune -f || true
+
                         docker rmi \$(docker images -q) --force
+
                         echo "All Docker images have been removed."
                         
                         # Pull the latest Docker image
@@ -89,8 +94,8 @@ pipeline {
                 script: """
                     ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} 'bash -sx' << 'EOF'
                         containerId=\$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
-                        sudo docker exec \$containerId python3 /app/selenium_test.py
-                    EOF
+                        sudo docker exec \$containerId python manage.py test weather_app.test_functional
+        
                 """,
                 returnStatus: true
             )
@@ -153,7 +158,11 @@ pipeline {
                         
                         # Remove all existing Docker images
                         echo "Removing all Docker images..."
+
+                        docker images -q | xargs -r docker rmi --no-prune -f || true
+
                         docker rmi \$(docker images -q) --force
+
                         echo "All Docker images have been removed."
                         
                         # Pull the latest Docker image
