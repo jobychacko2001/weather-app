@@ -76,7 +76,7 @@ pipeline {
     '
         """
             sh 'sleep 10'
-            // Execute Selenium tests against the Docker container on the development server
+            // Execute tests against the Docker container on the development server
             def testResult = sh (
                 script: """
                     ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} 'bash -sx' << 'EOF'
