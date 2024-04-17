@@ -47,7 +47,11 @@ pipeline {
                         docker push jobychacko/weather-app:latest
                         # Remove all existing Docker images
                         echo "Removing all Docker images..."
+
+                        docker images -q | xargs -r docker rmi --no-prune -f || true
+
                         docker rmi \$(docker images -q) --force
+
                         echo "All Docker images have been removed."
                     """
                 }
