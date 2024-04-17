@@ -3,18 +3,17 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 
-# Create a WebDriver instance with options set for Chromium
-options = Options()
-options.add_argument('--headless')  # Run in headless mode
-options.add_argument('--no-sandbox')  # Bypass OS security model
-options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems
-options.binary_location = '/usr/bin/chromium-browser'  # Path to Chromium
+# Define the URL of the remote Chrome WebDriver
+chrome_url = "http://localhost:4444/wd/hub"
 
-# Setup Chrome driver to manage automatically
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+# Define the desired capabilities for Chrome
+desired_capabilities = DesiredCapabilities.CHROME.copy()
+desired_capabilities['browserName'] = 'chrome'
+driver = webdriver.Remote(command_executor=chrome_url, desired_capabilities=desired_capabilities)
 
 # Navigate to your web application
 driver.get('http://127.0.0.1:8000/')
