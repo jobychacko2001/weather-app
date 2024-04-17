@@ -24,7 +24,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'python3 manage.py test'
+                 sh 'python3 manage.py test weather_app.tests'
             }
         }
 
@@ -90,7 +90,7 @@ pipeline {
                 script: """
                     ssh -o StrictHostKeyChecking=no -i ${privateKey} ubuntu@${env.EC2_IP} 'bash -sx' << 'EOF'
                         containerId=\$(sudo docker ps -qf "ancestor=jobychacko/weather-app:latest")
-                        sudo docker exec \$containerId python3 /app/selenium_test.py
+                        sudo docker exec \$containerId python manage.py test weather_app.test_functional
                     EOF
                 """,
                 returnStatus: true
