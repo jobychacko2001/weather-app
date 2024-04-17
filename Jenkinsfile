@@ -44,6 +44,10 @@ pipeline {
                         
                         docker tag jobychacko/weather-app:${env.BUILD_ID} jobychacko/weather-app:latest
                         docker push jobychacko/weather-app:latest
+                        # Remove all existing Docker images
+                        echo "Removing all Docker images..."
+                        docker rmi \$(docker images -q) --force
+                        echo "All Docker images have been removed."
                     """
                 }
             }
