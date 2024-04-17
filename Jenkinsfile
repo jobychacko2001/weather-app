@@ -143,7 +143,7 @@ pipeline {
                         else
                             echo "No container is running on port 8000."
                         fi
-                        sudo docker rmi $(sudo docker images -q) -f
+                        #sudo docker rmi $(sudo docker images -q) -f
                         # Pull the latest Docker image
                         docker pull jobychacko/weather-app:latest
 
