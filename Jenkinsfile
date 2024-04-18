@@ -124,7 +124,7 @@ pipeline {
                             git remote set-url origin https://x-access-token:${GIT_TOKEN}@github.com/jobychacko2001/weather-app.git
                         """
         
-                        // Merge main branch into master
+                        // Merge main branch into master..
                         sh """
                             git fetch --all
                             git checkout master
