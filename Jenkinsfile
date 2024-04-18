@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     environment {
@@ -32,6 +31,20 @@ pipeline {
             steps {
                 script {
                     dockerImage = docker.build("jobychacko/weather-app:${env.BUILD_ID}")
+                }
+            }
+        }
+        
+        stage('Selennium Test') {
+            steps {
+                script {
+                    selenium_container = docker.image("selenium/standalone-chrome:123.0")
+                    sh 'docker rm -f selenium-test || true'
+                    selenium_container.run('--name selenium-test -p 4444:4444')
+                    app_container = docker.image("jobychacko/weather-app:${env.BUILD_ID}")
+                    sh 'docker rm -f weather-app-dev || true'
+                    app_container.run("-d -p 8000:8000 --name weather-app-dev")
+                    sh 'python3 selenium_test.py'
                 }
             }
         }
