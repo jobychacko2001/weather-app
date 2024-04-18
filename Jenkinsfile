@@ -142,6 +142,10 @@ pipeline {
         }
 
             stage('Deploy to PROD_EC2') {
+                when {
+        // This stage is executed only if DEPLOYMENT_EXIT_CODE is 0
+        expression { return env.TEST_RESULT.toInteger() == 0 }
+    }
                 steps {
                     script {
                         // Execute the deployment command
